@@ -4,7 +4,7 @@ import com.github.mirokolodii.tasks.SomeTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-class AndroidScreenshotsUploaderPlugin : Plugin<Project> {
+class AndroidFilesUploaderPlugin : Plugin<Project> {
     override fun apply(project: Project) {
 
         val i = project.tasks.register("someTask", SomeTask::class.java) {

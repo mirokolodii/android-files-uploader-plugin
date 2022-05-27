@@ -14,9 +14,9 @@ repositories {
 
 gradlePlugin {
     plugins {
-        create("androidScreenshotsUploader") {
+        create("androidFilesUploader") {
             id = "com.github.mirokolodii.android-screenshots-uploader"
-            implementationClass = "com.github.mirokolodii.AndroidScreenshotsUploaderPlugin"
+            implementationClass = "com.github.mirokolodii.AndroidFilesUploaderPlugin"
         }
     }
 }
