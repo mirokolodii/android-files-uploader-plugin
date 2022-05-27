@@ -9,10 +9,8 @@ class AndroidFilesUploaderPlugin : Plugin<Project> {
 
         val i = project.tasks.register("someTask", SomeTask::class.java) {
             it.doFirst {
-                println("someTask doFirst")
             }
             it.doLast {
-                println("someTask doLast")
             }
         }
 
