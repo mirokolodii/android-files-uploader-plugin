@@ -15,18 +15,18 @@ repositories {
 gradlePlugin {
     plugins {
         create("androidFilesUploader") {
-            id = "com.github.mirokolodii.android-screenshots-uploader"
+            id = "com.github.mirokolodii.android-files-uploader"
             implementationClass = "com.github.mirokolodii.AndroidFilesUploaderPlugin"
         }
     }
 }
 
 publishing {
-    publications {
-        myLibrary(MavenPublication) {
-            artifact jar
-        }
-    }
+//    publications {
+//        myLibrary(MavenPublication) {
+//            artifact jar
+//        }
+//    }
 
     repositories {
         maven {
