@@ -1,6 +1,8 @@
 package com.github.mirokolodii
 
-import com.github.mirokolodii.tasks.google_drive.UploadFilesTask
+import com.github.mirokolodii.extensions.ConfigExtension
+import com.github.mirokolodii.tasks.PullFilesTask
+import com.github.mirokolodii.tasks.UploadFilesTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -8,42 +10,39 @@ class AndroidFilesUploaderPlugin : Plugin<Project> {
 
     companion object {
         private const val EXTENSION_NAME = "filesUploaderConfig"
-        private const val DEFAULT_TASK_NAME = "uploadFiles"
+        private const val PULL_AND_UPLOAD_TASK_NAME = "pullAndUploadFiles"
+        private const val PULL_TASK_NAME = "pullFiles"
+        private const val UPLOAD_TASK_NAME = "uploadFiles"
     }
 
     override fun apply(project: Project) {
 
         val config = project.extensions.create(EXTENSION_NAME, ConfigExtension::class.java)
 
-        val i = project.tasks.register(DEFAULT_TASK_NAME, UploadFilesTask::class.java) { task ->
-            task.googleDriveClientId.set(config.googleDriveClientId)
-            task.googleDriveSecret.set(config.googleDriveSecret)
-            task.googleDriveCredentialsDirPath.set(config.googleDriveCredentialsDirPath)
-
-            task.sourceFolderPath.set(config.sourceFolderPath)
-
-            task.destinationFolderId.set(config.destinationFolderId)
-            task.destinationFolderPath.set(config.destinationFolderPath)
-
-            task.doFirst {
-                task.logger.error("doFirst")
-            }
-
-            task.doLast {
-                task.logger.error("doLast")
-            }
+        project.task(PULL_AND_UPLOAD_TASK_NAME) { task ->
+            task.dependsOn(PULL_TASK_NAME)
+            task.finalizedBy(UPLOAD_TASK_NAME)
         }
 
-        project.task("sampleTask") { it ->
-            it.doFirst {
-                println("sampleTask do first ${it.didWork}")
-            }
-            it.doLast {
-                println("sampleTask Do last ${it.didWork}")
-            }
+        project.tasks.register(PULL_TASK_NAME, PullFilesTask::class.java) { task ->
+            task.shouldPullFilesFromDevice.set(config.shouldPullFilesFromDevice)
+            task.adbExePath.set(config.adbExePath)
+            task.deviceFolderPath.set(config.deviceFolderPath)
+            task.localFolderPath.set(config.localFolderPath)
+        }
 
-//            it.dependsOn("someTask")
-            it.dependsOn(i)
+        project.tasks.register(UPLOAD_TASK_NAME, UploadFilesTask::class.java) { task ->
+            task.shouldUploadFiles.set(config.shouldUploadFiles)
+            task.replaceFileIfExists.set(config.googleDrive.replaceFileIfExists)
+
+            task.googleDriveClientId.set(config.googleDrive.googleDriveClientId)
+            task.googleDriveSecret.set(config.googleDrive.googleDriveSecret)
+            task.googleDriveCredentialsDirPath.set(config.googleDrive.googleDriveCredentialsDirPath)
+
+            task.sourceFolderPath.set(config.localFolderPath)
+
+            task.destinationFolderId.set(config.googleDrive.destinationFolderId)
+            task.destinationFolderPath.set(config.googleDrive.destinationFolderPath)
         }
     }
 }

@@ -13,7 +13,7 @@ import com.google.api.services.drive.DriveRequest
 import com.google.api.services.drive.DriveScopes
 import org.apache.http.client.utils.URIBuilder
 import org.gradle.api.GradleException
-import org.slf4j.Logger
+import org.gradle.api.logging.Logger
 import java.io.File
 import com.google.api.services.drive.model.File as DriveFile
 
@@ -46,26 +46,7 @@ class GoogleClient(
         .build()
 
 
-    fun listFolders() {
-        val result = service.files().list()
-            .setPageSize(10)
-            .setFields("nextPageToken, files(id, name, lastModifyingUser)")
-            .execute()
-
-        result.files.forEach { file ->
-            println("${file.name}: ${file.id}, ${file.lastModifyingUser}")
-        }
-    }
-
     private fun getCredentials(): Credential {
-
-        // Load client secrets.
-//        val inputStream: InputStream = Companion::class.java.getResourceAsStream(dataStoreFactory)
-//            ?: throw FileNotFoundException("Resource not found: $credentialsFilePath")
-
-//        val clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, InputStreamReader(inputStream))
-
-        // Build flow and trigger user authorization request.
         val flow = GoogleAuthorizationCodeFlow.Builder(
             HTTP_TRANSPORT,
             JSON_FACTORY,
@@ -87,13 +68,7 @@ class GoogleClient(
      * Creates missing folders in path, starting with *parent*, and returns last folder's id
      */
     fun createFoldersInPath(parent: String, folders: List<String>): String {
-
-        println("**************")
-        println("start createFoldersInPath: parent: $parent, folders: ${folders.joinToString()}")
         return folders.fold(parent) { currentParent, currentName ->
-
-            println("------*******")
-            println("currentParent $currentParent, currentName $currentName")
             val foldersResult = service.files().list()
                 .setSpaces(DEFAULT_SPACES)
                 .setCorpora(DEFAULT_CORPORA)
@@ -106,9 +81,6 @@ class GoogleClient(
                 .execute()
                 .files
 
-            foldersResult.forEach {
-                println("createFoldersInPath: found folder ${it.name}")
-            }
             val folder = if (foldersResult.isNotEmpty()) {
                 foldersResult[0]
             } else {
@@ -119,7 +91,6 @@ class GoogleClient(
                 service.files().create(toCreate).execute()
             }
 
-            println("Found or created folder: ${folder.name}, ${folder.id}")
             folder.id
         }
     }
@@ -144,7 +115,7 @@ class GoogleClient(
         val modificationRequest: DriveRequest<DriveFile> = if (existingDestinationFiles.isNotEmpty()) {
             if (replaceIfExists) {
                 val updatedFile = existingDestinationFiles.first()
-                println("File with name '${file.name}' already exists, replacing ...")
+                logger.lifecycle("File with name '${file.name}' already exists, replacing ...")
                 service.files().update(updatedFile.id, null, content)
             } else {
                 throw GradleException(
@@ -154,7 +125,7 @@ class GoogleClient(
 
             }
         } else {
-            println("Uploading file '${file.name}'")
+            logger.lifecycle("Uploading file '${file.name}'")
             val driveFile = DriveFile().apply {
                 name = file.name
                 parents = listOf(destinationParentId)
@@ -180,24 +151,14 @@ class GoogleClient(
          }
          permissionsBatchRequest.execute()*/
 
-        println("File uploaded: ${file.canonicalPath}\nas ${createdDriveFile.getLink()}")
+        logger.lifecycle("File uploaded: ${file.canonicalPath}\nas ${createdDriveFile.getLink()}")
     }
 }
 
 private fun DriveRequest<DriveFile>.setProgressLogger(logger: Logger) {
     mediaHttpUploader.setProgressListener { uploader ->
-        println("Uploaded: ${uploader.uploadState} ${uploader.numBytesUploaded}[bytes](${uploader.progress * 100})")
+        logger.lifecycle("Uploaded: ${uploader.uploadState} ${uploader.numBytesUploaded}[bytes](${uploader.progress * 100})")
     }
-
-
-//    modificationRequest.getMediaHttpUploader().with {
-//        progressListener = {
-//            println('Uploaded: {} {}[bytes]({})',
-//                it.uploadState,
-//                String.format('%,3d', it.numBytesUploaded),
-//                String.format('%2.1f%%', it.progress * 100))
-//        }
-//    }
 }
 
 private fun DriveFile.getLink() = URIBuilder("https://drive.google.com/open")
