@@ -39,7 +39,7 @@ filesUploaderConfig {
 
     // Controls, whether or not files should be uploaded from local folder to Google Drive.
     // Optional (default value is 'true').
-	// If set to 'true', you need to specify `googleDrive` section as well.
+    // If set to 'true', you need to specify `googleDrive` section as well.
     shouldUploadFiles = true
 
     // GoogleDrive configuration
@@ -54,8 +54,8 @@ filesUploaderConfig {
         // Destination folder in GoogleDrive
         // All missing folders will be created.
         destinationFolderPath = "some/path/"
-		// or use folder id
-        //    destinationFolderId = "<some id>"
+	// or use folder id
+        // destinationFolderId = "<some id>"
     }
 }
 ```
