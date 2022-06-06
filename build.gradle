@@ -6,7 +6,7 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version "1.6.21"
 }
 
-group = "com.github.mirokolodii"
+group = "io.github.mirokolodii"
 version = "0.1"
 
 repositories {
@@ -22,7 +22,7 @@ pluginBundle {
 gradlePlugin {
     plugins {
         create("androidFilesUploader") {
-            id = "com.github.mirokolodii.android-files-uploader"
+            id = "io.github.mirokolodii.android-files-uploader"
             displayName = "Android Files Uploader plugin"
             description = "Plugin allows to pull files from specified folder in Android device via ADB " +
                     "and upload to GoogleDrive folder."
