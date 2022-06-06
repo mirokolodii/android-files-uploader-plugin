@@ -32,7 +32,7 @@ filesUploaderConfig {
     /* Local folder path.
     This folder is used:
 	- as destination for files, which will be pulled from the device,
-    - as source for files, that should uploaded to Google Drive.
+   	- as source for files, that should uploaded to Google Drive.
     All missing folders will be created.
 	*/
     localFolderPath = "$rootDir/screenshots/"
