@@ -39,9 +39,7 @@ abstract class PullFilesTask : DefaultTask() {
         createDeviceFolder()
         createLocalFolder()
         pullFiles()
-        //TODO uncomment after debug
-//        cleanupDeviceFolder()
-
+        cleanupDeviceFolder()
     }
 
     private fun createDeviceFolder() {
