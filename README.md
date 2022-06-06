@@ -13,7 +13,7 @@ You need to have Google Drive API credentials created first.
 Follow instruction in [Gradle Plugin Portal](https://plugins.gradle.org/plugin/io.github.mirokolodii.android-files-uploader "Gradle Plugin Portal").
 
 ## Configuration
-Add extension named `filesUploaderConfig` as in example below.
+Add extension named `filesUploaderConfig` to your app's `build.gradle` as in example below.
 ```js
 // Configuration of Gradle plugin 'android-files-uploader'
 filesUploaderConfig {
