@@ -1,13 +1,9 @@
-
-**Table of Contents**
-
-[TOC]
-
 # Android Files Uploader Plugin
 This Gradle plugin allows to pull files from Android device via ADB to local folder and then upload them (including folders structure) to Google Drive.
+
 Inspired by https://github.com/valnaumov/gradle-google-drive-plugin.
 
-##Prerequisites
+## Prerequisites
 You need to have Google Drive API credentials created first.
 1. Go to [Google API Console](https://console.developers.google.com/flows/enableapi?apiid=drive "Google API Console") and create a project (if not created yet).
 2. Go to [Credentials section](https://console.developers.google.com/apis/credentials "Credentials section") of this project.
