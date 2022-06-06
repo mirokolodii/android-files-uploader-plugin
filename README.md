@@ -1,4 +1,4 @@
-https://img.shields.io/github/v/release/mirokolodii/android-files-uploader-plugin
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/mirokolodii/android-files-uploader-plugin)
 
 # Android Files Uploader Plugin
 This Gradle plugin allows to pull files from Android device via ADB to local folder and then upload them (including folders structure) to Google Drive.
