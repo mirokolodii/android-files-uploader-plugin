@@ -21,7 +21,7 @@ pluginBundle {
 
 gradlePlugin {
     plugins {
-        create("androidFilesUploader") {
+        androidFilesUploader {
             id = "io.github.mirokolodii.android-files-uploader"
             displayName = "Android Files Uploader plugin"
             description = "Plugin allows to pull files from specified folder in Android device via ADB " +
