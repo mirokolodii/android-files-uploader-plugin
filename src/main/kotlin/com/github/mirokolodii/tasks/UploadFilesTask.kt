@@ -97,4 +97,4 @@ abstract class UploadFilesTask : DefaultTask() {
     }
 }
 
-private fun String.splitToNestedFolders() = split("/").filter { it.isNotBlank() }
+private fun String.splitToNestedFolders() = split(File.separator).filter { it.isNotBlank() }
