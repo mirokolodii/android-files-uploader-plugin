@@ -6,6 +6,7 @@ import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.http.FileContent
+import com.google.api.client.http.HttpRequestInitializer
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.client.util.store.FileDataStoreFactory
 import com.google.api.services.drive.Drive
@@ -37,22 +38,13 @@ class GoogleClient(
         private const val DEFAULT_FILE_CONTENT_TYPE = "application/octet-stream"
     }
 
-    private val service = Drive.Builder(
-        HTTP_TRANSPORT,
-        JSON_FACTORY,
-        getCredentials()
-    )
-        .setApplicationName(APPLICATION_NAME)
-        .build()
-
-
-    private fun getCredentials(): Credential {
+    val credential: Credential by lazy {
         val flow = GoogleAuthorizationCodeFlow.Builder(
-            HTTP_TRANSPORT,
-            JSON_FACTORY,
-            clientId,
-            clientSecret,
-            SCOPES
+            /* transport = */ HTTP_TRANSPORT,
+            /* jsonFactory = */ JSON_FACTORY,
+            /* clientId = */ clientId,
+            /* clientSecret = */ clientSecret,
+            /* scopes = */ SCOPES
         )
             .setDataStoreFactory(secretsDataStoreFactory)
             .setAccessType("offline")
@@ -61,8 +53,25 @@ class GoogleClient(
         val receiver = LocalServerReceiver.Builder().setPort(8888).build()
 
         //returns an authorized Credential object.
-        return AuthorizationCodeInstalledApp(flow, receiver).authorize("user")
+        AuthorizationCodeInstalledApp(flow, receiver).authorize("user")
     }
+
+    private val httpRequestInitializer = HttpRequestInitializer { request ->
+        request?.apply {
+            credential.initialize(request)
+            connectTimeout = 60000
+            readTimeout = 60000
+        }
+    }
+
+    private val service = Drive.Builder(
+        /* transport = */ HTTP_TRANSPORT,
+        /* jsonFactory = */ JSON_FACTORY,
+        /* httpRequestInitializer = */ credential
+    )
+        .setHttpRequestInitializer(httpRequestInitializer)
+        .setApplicationName(APPLICATION_NAME)
+        .build()
 
     /**
      * Creates missing folders in path, starting with *parent*, and returns last folder's id
